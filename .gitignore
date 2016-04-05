@@ -1,0 +1,11 @@
+# OS Junk
+.DS_Store
+junk
+
+# Node Junk
+npm-debug.log
+node_modules
+
+# App
+lib
+.env
