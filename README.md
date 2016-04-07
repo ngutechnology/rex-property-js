@@ -17,6 +17,8 @@ For example:
 
 ```javascript
 Rex.Authentication.login({ email: 'test@test.com', password: 'password' });
+// or
+Rex.login('test@test.com', 'password');
 
 // And then elsewhere...
 Rex.Properties.search().then((results) => {

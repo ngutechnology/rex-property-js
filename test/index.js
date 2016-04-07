@@ -59,6 +59,14 @@ describe("Authentication", () => {
         });
     });
     
+    it("can use the shorthand method", (done) => {
+        Rex.login(process.env.EMAIL, process.env.PASSWORD).then((token) => {
+            expect(Rex.token).to.not.be.null();
+            expect(Rex.token).to.equal(token);
+            done();
+        });
+    });
+    
     it("clears the token on logout", (done) => {
         Rex.Authentication.logout().then(() => {
             expect(Rex.token).to.be.null();

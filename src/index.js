@@ -7,7 +7,12 @@ const SERVICES_TREE = require('./services');
 const Rex = {
     SERVICES: Object.keys(SERVICES_TREE),
     
-    token: null
+    token: null,
+    
+    
+    login (email, password) {
+        return Rex.Authentication.login({ email: email, password: password});
+    }
 };
 
 
