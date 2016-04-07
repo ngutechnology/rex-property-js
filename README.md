@@ -1,4 +1,4 @@
-# REX Software
+# REX Property API
 
 Interface with REX Software's property management API.
 
@@ -10,6 +10,8 @@ const Rex = require('rex-property');
 ```
 
 Services and methods map against the REX API directly and respond using Promises.
+
+You will need to acquire a REX account before using the API.
 
 For example:
 
@@ -28,11 +30,4 @@ Rex.Properties.search().then((results) => {
 
 ## Development
 
-Once you have been set up on the Rex test environment, create a `.env` file with 
-your test account email and password:
-
-```
-NODE_ENV=development
-EMAIL=test@test.com
-PASSWORD=password
-```
+You need to get an account for the REX test environment and then enter the details into `.env` (check the example `.env.example`).
