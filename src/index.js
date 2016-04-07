@@ -10,8 +10,19 @@ const Rex = {
     token: null,
     
     
+    // Shortcut for Authentication.login()
     login (email, password) {
         return Rex.Authentication.login({ email: email, password: password});
+    },
+    
+    
+    // Geo information is in the form POINT([lat] [lng]) so let's convert it
+    // to { lat: [lat], lng: [lng] }
+    point_to_location (point) {
+        if (!point || point == '' || point.indexOf('POINT') === -1) return { lat: null, lng: null };
+        
+        point = point.replace('POINT(', '').replace(')', '').split(' ');
+        return { lat: parseFloat(point[0]), lng: parseFloat(point[1]) };
     }
 };
 
