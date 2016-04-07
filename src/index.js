@@ -18,7 +18,7 @@ const Rex = {
     
     // Geo information is in the form POINT([lat] [lng]) so let's convert it
     // to { lat: [lat], lng: [lng] }
-    point_to_location (point) {
+    pointToLocation (point) {
         if (!point || point == '' || point.indexOf('POINT') === -1) return { lat: null, lng: null };
         
         point = point.replace('POINT(', '').replace(')', '').split(' ');

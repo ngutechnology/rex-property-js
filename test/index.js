@@ -101,7 +101,7 @@ describe("ID shorthand", () => {
 
 describe("#point_to_location", () => {
     it('nulls out a bad POINT() value', (done) => {
-        let location = Rex.point_to_location('bad value');
+        let location = Rex.pointToLocation('bad value');
         
         expect(location.lat).to.equal(null);
         expect(location.lng).to.equal(null);
@@ -111,7 +111,7 @@ describe("#point_to_location", () => {
     
     it('converts a POINT() value to a { lat, lng } object', (done) => {
         let point = 'POINT(-38.294285 143.175875)';
-        let location = Rex.point_to_location(point);
+        let location = Rex.pointToLocation(point);
         
         expect(location.lat).to.equal(-38.294285);
         expect(location.lng).to.equal(143.175875);

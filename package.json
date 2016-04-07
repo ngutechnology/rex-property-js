@@ -1,6 +1,6 @@
 {
   "name": "rex-property",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A wrapper for the REX property management API",
   "main": "lib/index.js",
   "scripts": {
