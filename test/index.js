@@ -74,3 +74,26 @@ describe("Authentication", () => {
         });
     });
 });
+
+
+describe("ID shorthand", () => {
+    beforeEach((done) => {
+        Rex.login(process.env.EMAIL, process.env.PASSWORD).then(() => done());
+    });
+    
+    it("can read IDs with using { id: 68 }", (done) => {
+        Rex.Listings.read({ id: 68, fields: ['property_core' ]}).then((listing) => {
+            expect(listing).to.include(['_id', 'system_listing_state', 'property']);
+            expect(listing._id).to.equal(68);
+            done();
+        });
+    });
+    
+    it("can read IDs without using { id: 68 }", (done) => {
+        Rex.Listings.read(68, { fields: ['property_core' ]}).then((listing) => {
+            expect(listing).to.include(['_id', 'system_listing_state', 'property']);
+            expect(listing._id).to.equal(68);
+            done();
+        });
+    });
+});

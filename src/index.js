@@ -31,7 +31,13 @@ Rex.SERVICES.forEach((service_name) => {
     method_names.forEach((method_name) => {
         let parameters = template.methods[method_name];
         
-        service[method_name] = function (args) {
+        service[method_name] = function (id_or_args, args) {
+            if (arguments.length == 2) {
+                args.id = id_or_args;
+            } else {
+                args = id_or_args;
+            }
+            
             // Call the actual service
             return RPC.call(`${service_name}::${method_name}`, args, Rex.token);
         };
