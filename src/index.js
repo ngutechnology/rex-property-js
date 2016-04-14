@@ -7,12 +7,17 @@ const SERVICES_TREE = require('./services');
 const Rex = {
     SERVICES: Object.keys(SERVICES_TREE),
     
+    email: null,
+    password: null,
     token: null,
     
-    
-    // Shortcut for Authentication.login()
-    login (email, password) {
-        return Rex.Authentication.login({ email: email, password: password});
+    // Connect to Rex
+    connect (email, password) {
+        Rex.email = email;
+        Rex.password = password;
+        
+        Rex.Authentication.login({ email: Rex.email, password: Rex.password });
+        return Rex;
     },
     
     
@@ -23,6 +28,12 @@ const Rex = {
         
         point = point.replace('POINT(', '').replace(')', '').split(' ');
         return { lat: parseFloat(point[0]), lng: parseFloat(point[1]) };
+    },
+    
+    
+    // Internal use for authing with Rex automatically for each request
+    _auth () {
+        return Rex.Authentication.login({ email: Rex.email, password: Rex.password });
     }
 };
 
@@ -49,8 +60,17 @@ Rex.SERVICES.forEach((service_name) => {
                 args = id_or_args;
             }
             
-            // Call the actual service
-            return RPC.call(`${service_name}::${method_name}`, args, Rex.token);
+            if (service_name == "Authentication" || Rex.token !== null) {
+                // Call the actual service
+                return RPC.call(`${service_name}::${method_name}`, args, Rex.token);
+            } else {
+                return new Promise((accept, reject) => {
+                    Rex._auth().then(() => {
+                        // Call the actual service
+                        return accept(RPC.call(`${service_name}::${method_name}`, args, Rex.token));
+                    }).catch(e => reject(e));
+                });
+            }
         };
     });
     
@@ -63,6 +83,8 @@ Rex.Authentication.login = (args) => {
     args.application = 'rex';
     return new Promise((accept, reject) => {
         RPC.call('Authentication::login', args).then((token) => {
+            Rex.email = null;
+            Rex.password = null;
             Rex.token = token;
             accept(token);
         }).catch(e => reject(e));
@@ -72,6 +94,8 @@ Rex.Authentication.login = (args) => {
 Rex.Authentication.logout = () => {
     return new Promise((accept, reject) => {
         RPC.call('Authentication::logout').then(() => {
+            Rex.email = null;
+            Rex.password = null;
             Rex.token = null;
             accept();
         }).catch(e => reject(e));

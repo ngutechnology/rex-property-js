@@ -3,11 +3,7 @@
 Interface with REX Software's property management API.
 
 
-## Usage
-
-```javascript
-const Rex = require('rex-property');
-```
+## Usage (as of 2.0.0)
 
 Services and methods map against the REX API directly and respond using Promises.
 
@@ -16,11 +12,12 @@ You will need to acquire a REX account before using the API.
 For example:
 
 ```javascript
-Rex.Authentication.login({ email: 'test@test.com', password: 'password' });
-// or
-Rex.login('test@test.com', 'password');
+const Rex = require('rex-property').connect(process.env.REX_EMAIL, process.env.REX_PASSWORD);
+```
 
-// And then elsewhere...
+...and then something like:
+
+```javascript
 Rex.Properties.search().then((results) => {
     console.log(`${results.total} Total`);
     console.log(results.rows);

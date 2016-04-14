@@ -3,11 +3,10 @@ require('dotenv').config({ slient: true });
 const Values = require('test-values');
 const expect = require('code').expect;
 
-const Rex = require('../lib');
+var Rex = require('../lib').connect(process.env.EMAIL, process.env.PASSWORD);
 
 
 describe('Setup', () => {
-    
     it('can describe a random service', (done) => {
         let service = Values.random(Rex.SERVICES);
         Rex[service].describe().then((response) => {
@@ -38,49 +37,7 @@ describe('Setup', () => {
 });
 
 
-describe("Authentication", () => {
-    it('fails on a bad login', (done) => {
-        Rex.Authentication.login({ email: 'bad', password: 'bad' }).catch((err) => {
-            expect(err.type).to.equal('AuthenticationException');
-            done();
-        });
-    });
-    
-    it("saves and uses the token on login", (done) => {
-        Rex.Authentication.login({ email: process.env.EMAIL, password: process.env.PASSWORD }).then((token) => {
-            expect(Rex.token).to.not.be.null();
-            
-            // Make sure the token works
-            Rex.Properties.search().then((results) => {
-                expect(results).to.include('rows', 'total');
-                expect(results.rows[0]).to.include('_id');
-                done();
-            });
-        });
-    });
-    
-    it("can use the shorthand method", (done) => {
-        Rex.login(process.env.EMAIL, process.env.PASSWORD).then((token) => {
-            expect(Rex.token).to.not.be.null();
-            expect(Rex.token).to.equal(token);
-            done();
-        });
-    });
-    
-    it("clears the token on logout", (done) => {
-        Rex.Authentication.logout().then(() => {
-            expect(Rex.token).to.be.null();
-            done();
-        });
-    });
-});
-
-
 describe("ID shorthand", () => {
-    beforeEach((done) => {
-        Rex.login(process.env.EMAIL, process.env.PASSWORD).then(() => done());
-    });
-    
     it("can read IDs with using { id: 68 }", (done) => {
         Rex.Listings.read({ id: 68, fields: ['property_core' ]}).then((listing) => {
             expect(listing).to.include(['_id', 'system_listing_state', 'property']);
