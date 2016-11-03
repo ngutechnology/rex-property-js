@@ -1,18 +1,25 @@
 require('dotenv').config({ slient: true });
 
 const Values = require('test-values');
+const Nock = require('nock');
 const expect = require('code').expect;
 
 var Rex = require('../lib').connect(process.env.EMAIL, process.env.PASSWORD);
 
 
 describe('Setup', () => {
+    afterEach((done) => {
+        Nock.cleanAll();
+        done();
+    });
+    
+    
     it('can describe a random service', (done) => {
         let service = Values.random(Rex.SERVICES);
         Rex[service].describe().then((response) => {
             expect(response).to.not.be.null();
             
-            expect(response).to.include('name', 'description', 'methods');
+            expect(response).to.include(['name', 'description', 'methods']);
             expect(Object.keys(response.methods).length).to.be.above(0);
             
             done();
@@ -38,11 +45,19 @@ describe('Setup', () => {
 
 
 describe("ID shorthand", () => {
+    beforeEach((done) => {
+        Nock("https://api.rexsoftware.com").post('/rex.php').reply(200, JSON.stringify({ result: { _id: 68, system_listing_state: '', property: {} }}));
+        done();
+    });
+    
+    
     it("can read IDs with using { id: 68 }", (done) => {
         Rex.Listings.read({ id: 68, fields: ['property_core' ]}).then((listing) => {
             expect(listing).to.include(['_id', 'system_listing_state', 'property']);
             expect(listing._id).to.equal(68);
             done();
+        }).catch((err) => {
+            console.log('ERROR', err);
         });
     });
     

@@ -12,9 +12,11 @@ const Rex = {
     token: null,
     
     // Connect to Rex
-    connect (email, password) {
+    connect (email, password, url) {
         Rex.email = email;
         Rex.password = password;
+        
+        RPC.setUrl(url);
         
         Rex.Authentication.login({ email: Rex.email, password: Rex.password });
         return Rex;
@@ -64,10 +66,10 @@ Rex.SERVICES.forEach((service_name) => {
                 // Call the actual service
                 return RPC.call(`${service_name}::${method_name}`, args, Rex.token);
             } else {
-                return new Promise((accept, reject) => {
+                return new Promise((resolve, reject) => {
                     Rex._auth().then(() => {
                         // Call the actual service
-                        return accept(RPC.call(`${service_name}::${method_name}`, args, Rex.token));
+                        return resolve(RPC.call(`${service_name}::${method_name}`, args, Rex.token));
                     }).catch(e => reject(e));
                 });
             }
@@ -81,23 +83,23 @@ Rex.SERVICES.forEach((service_name) => {
 // Override the Authentication functions to catch the token
 Rex.Authentication.login = (args) => {
     args.application = 'rex';
-    return new Promise((accept, reject) => {
+    return new Promise((resolve, reject) => {
         RPC.call('Authentication::login', args).then((token) => {
             Rex.email = null;
             Rex.password = null;
             Rex.token = token;
-            accept(token);
+            resolve(token);
         }).catch(e => reject(e));
     });
 };
 
 Rex.Authentication.logout = () => {
-    return new Promise((accept, reject) => {
+    return new Promise((resolve, reject) => {
         RPC.call('Authentication::logout').then(() => {
             Rex.email = null;
             Rex.password = null;
             Rex.token = null;
-            accept();
+            resolve();
         }).catch(e => reject(e));
     });
 };

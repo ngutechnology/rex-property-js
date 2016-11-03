@@ -26,6 +26,7 @@
     "babel-register": "^6.7.2",
     "code": "^2.1.1",
     "mocha": "^2.4.5",
+    "nock": "^9.0.2",
     "test-values": "^2.0.5"
   },
   "directories": {
